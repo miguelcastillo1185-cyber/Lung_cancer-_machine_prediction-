@@ -1,0 +1,154 @@
+>>> import pandas as pd
+>>> import numpy as np
+>>> import matplotlib.pyplot as plt
+>>> import seabron as sns
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'seabron'
+>>> import seaborn as sns
+>>> from sklearn.preprocessing import LabelEncoder
+>>> from sklearn import preprocessing
+>>> from sklearn.model_selection import train_test_split
+>>> from sklearn.tree import DecisionTreeClassifier
+>>> from sklearn.metrics import accuracy_score
+>>> from sklearn.metrics import classification_report
+>>> df = pd.read_csv('survey_lung_cancer.csv')
+>>> df.head()
+  GENDER  AGE  SMOKING  YELLOW_FINGERS  ANXIETY  PEER_PRESSURE  CHRONIC DISEASE  FATIGUE   ALLERGY   WHEEZING  ALCOHOL CONSUMING  COUGHING  SHORTNESS OF BREATH  SWALLOWING DIFFICULTY  CHEST PAIN LUNG_CANCER
+0      M   69        1               2        2              1                1         2         1         2                  2         2                    2                      2           2         YES
+1      M   74        2               1        1              1                2         2         2         1                  1         1                    2                      2           2         YES
+2      F   59        1               1        1              2                1         2         1         2                  1         2                    2                      1           2          NO
+3      M   63        2               2        2              1                1         1         1         1                  2         1                    1                      2           2          NO
+4      F   63        1               2        1              1                1         1         1         2                  1         2                    2                      1           1          NO
+>>> df.duplicated().sum()
+np.int64(33)
+>>> df.drop_duplicated()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\pandas\core\generic.py", line 6321, in __getattr__
+    return object.__getattribute__(self, name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'DataFrame' object has no attribute 'drop_duplicated'. Did you mean: 'drop_duplicates'?
+>>> df.drop_duplicates()
+    GENDER  AGE  SMOKING  YELLOW_FINGERS  ANXIETY  PEER_PRESSURE  CHRONIC DISEASE  FATIGUE   ALLERGY   WHEEZING  ALCOHOL CONSUMING  COUGHING  SHORTNESS OF BREATH  SWALLOWING DIFFICULTY  CHEST PAIN LUNG_CANCER
+0        M   69        1               2        2              1                1         2         1         2                  2         2                    2                      2           2         YES
+1        M   74        2               1        1              1                2         2         2         1                  1         1                    2                      2           2         YES
+2        F   59        1               1        1              2                1         2         1         2                  1         2                    2                      1           2          NO
+3        M   63        2               2        2              1                1         1         1         1                  2         1                    1                      2           2          NO
+4        F   63        1               2        1              1                1         1         1         2                  1         2                    2                      1           1          NO
+..     ...  ...      ...             ...      ...            ...              ...       ...       ...       ...                ...       ...                  ...                    ...         ...         ...
+279      F   59        1               2        2              2                1         1         2         2                  1         2                    1                      2           1         YES
+280      F   59        2               1        1              1                2         2         2         1                  1         1                    2                      1           1          NO
+281      M   55        2               1        1              1                1         2         2         1                  1         1                    2                      1           2          NO
+282      M   46        1               2        2              1                1         1         1         1                  1         1                    1                      2           2          NO
+283      M   60        1               2        2              1                1         2         1         2                  2         2                    2                      2           2         YES
+
+[276 rows x 16 columns]
+>>> df.isnull().sum()
+GENDER                   0
+AGE                      0
+SMOKING                  0
+YELLOW_FINGERS           0
+ANXIETY                  0
+PEER_PRESSURE            0
+CHRONIC DISEASE          0
+FATIGUE                  0
+ALLERGY                  0
+WHEEZING                 0
+ALCOHOL CONSUMING        0
+COUGHING                 0
+SHORTNESS OF BREATH      0
+SWALLOWING DIFFICULTY    0
+CHEST PAIN               0
+LUNG_CANCER              0
+dtype: int64
+>>> le=preprocessing.LabelEncoder()
+>>> df['GENDER']=le.fit_transform(df['GENDER'])
+>>> df['LUNG_CANCER']=le.fit_transform(df['LUNG_CANCER'])
+>>> df['SMOKING']=le.fit_transform(df['SMOKING'])
+>>> df['YELLOW_FINGERS']=le.fit_transform(df['YELLOW_FINGERS'])
+>>> df['ANXIETY']=le.fit_transform(df['ANXIETY'])
+>>> df['PEER_PRESSURE']=le.fit_transform(df['PEER_PRESSURE'])
+>>> df['CHRONIC DISEASE']=le.fit_transform(df['CHRONIC DISEASE'])
+>>> df['FATIGUE ']=le.fit_transform(df['FATIGUE '])
+>>> df['ALLERGY ']=le.fit_transform(df['ALLERGY '])
+>>> df['WHEEZING']=le.fit_transform(df['WHEEZING'])
+>>> df['ALCOHOL CONSUMING']=le.fit_transform(df['ALCOHOL CONSUMING'])
+>>> df['COUGHING']=le.fit_transform(df['COUGHING'])
+>>> df['SHORTNESS OF BREATH']=le.fit_transform(df['SHORTNESS OF BREATH'])
+>>> df['SWALLOWING DIFFICULTY']=le.fit_transform(df['SWALLOWING DIFFICULTY'])
+>>> df['CHEST PAIN']=le.fit_transform(df['CHEST PAIN'])
+>>> df['LUNG_CANCER']=le.fit_transform(df['LUNG_CANCER'])
+>>>
+>>>
+>>> df.head()
+   GENDER  AGE  SMOKING  YELLOW_FINGERS  ANXIETY  PEER_PRESSURE  CHRONIC DISEASE  FATIGUE   ALLERGY   WHEEZING  ALCOHOL CONSUMING  COUGHING  SHORTNESS OF BREATH  SWALLOWING DIFFICULTY  CHEST PAIN  LUNG_CANCER
+0       1   69        0               1        1              0                0         1         0         1                  1         1                    1                      1           1            1
+1       1   74        1               0        0              0                1         1         1         0                  0         0                    1                      1           1            1
+2       0   59        0               0        0              1                0         1         0         1                  0         1                    1                      0           1            0
+3       1   63        1               1        1              0                0         0         0         0                  1         0                    0                      1           1            0
+4       0   63        0               1        0              0                0         0         0         1                  0         1                    1                      0           0            0
+>>>
+>>> sns.countplot(x = 'LUNG_CANCER', data = df, palette = 'Set2')
+<stdin>:1: FutureWarning:
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+<Axes: xlabel='LUNG_CANCER', ylabel='count'>
+>>> plt.xlable('lung cancer')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: module 'matplotlib.pyplot' has no attribute 'xlable'. Did you mean: 'table'?
+>>> plt.xlabel('lung cancer')
+Text(0.5, 0, 'lung cancer')
+>>> plt.ylabel('count')
+Text(0, 0.5, 'count')
+>>> plt.title('target distribution')
+Text(0.5, 1.0, 'target distribution')
+>>> plt.show()
+>>> x
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'x' is not defined
+>>>
+>>> xxx
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'xxx' is not defined
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> x = df.drop('LUNG_CANCER', axis=1)
+>>> y = df['LUNG_CANCER']
+>>> X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 42)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'X' is not defined. Did you mean: 'x'?
+>>> X_train, X_test, y_train, y_test = train_test_split(x, y, test_size = 0.25, random_state = 42)
+>>> dt = DecisionTreeClassifier(criterion = 'entropy', random_state = 42)
+>>> dt.fit(X_train, y_train)
+DecisionTreeClassifier(criterion='entropy', random_state=42)
+>>> y_dt_pred = dt.predict(X_test)
+>>> y_dt_pred
+array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1])
+>>> print(f"Accuracy Score: {accuracy_score(y_test, y_dt_pred)}")
+Accuracy Score: 0.9743589743589743
+>>> print(classification_report(y_test, y_dt_pred))
+              precision    recall  f1-score   support
+
+           0       0.80      0.80      0.80         5
+           1       0.99      0.99      0.99        73
+
+    accuracy                           0.97        78
+   macro avg       0.89      0.89      0.89        78
+weighted avg       0.97      0.97      0.97        78
+
+>>> baseline_accuracy = df['LUNG_CANCER'].value_counts(normalize=True).max()
+>>>
+>>> print(f"Baseline Accuracy: {baseline_accuracy:.2%}")
+Baseline Accuracy: 87.38%
